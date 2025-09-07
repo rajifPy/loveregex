@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Pixel Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple-dark: #1b003e;
+      --purple-medium: #4a1fa6;
+      --purple-light: #9b65ff;
+      --text-light: #f5f0ff;
+      --text-dark: #0f0f0f;
+      --green-chat: #2ecc71;
+      --pink-chat: #ff79c6;
+      --background-gradient: linear-gradient(135deg, #1b003e, #4a1fa6, #9b65ff);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Press Start 2P', monospace;
+      background: var(--background-gradient);
+      color: var(--text-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 10px;
+    }
+
+    .chat-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      max-width: 700px;
+      width: 100%;
+      height: 500px;
+    }
+
+    /* Heart Bar */
+    .heart-bar-game {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 10px;
+      width: 80px;
+      flex-shrink: 0;
+    }
+    .heart-bar-game .heart {
+      width: 60px;
+      height: 60px;
+    }
+
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      background-color: var(--purple-dark);
+      border: 5px solid var(--purple-light);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px var(--purple-light), 0 0 40px var(--purple-medium);
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      background-color: var(--purple-light);
+      gap: 12px;
+      border-bottom: 3px solid var(--pink-chat);
+    }
+    .profile-pic img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid var(--text-light);
+      box-shadow: 0 0 5px var(--pink-chat);
+    }
+    .chat-info { display: flex; flex-direction: column; }
+    .chat-title {
+      font-weight: bold;
+      font-size: 1.4em;
+      text-shadow: 1px 1px var(--purple-dark);
+    }
+    .chat-subtitle {
+      font-size: 0.95em;
+      color: var(--pink-chat);
+      margin-top: 2px;
+      text-shadow: 1px 1px var(--purple-dark);
+    }
+
+    .chat-window {
+      flex: 1;
+      padding: 12px;
+      background-color: var(--purple-dark);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 2px solid var(--purple-light);
+      border-bottom: 2px solid var(--purple-light);
+      border-radius: 0;
+      min-height: 350px;
+      max-height: 100%;
+      overflow-y: auto;
+    }
+    .chat-window::-webkit-scrollbar {
+      width: 8px;
+    }
+    .chat-window::-webkit-scrollbar-thumb {
+      background-color: var(--purple-light);
+      border-radius: 4px;
+    }
+
+    .message {
+      padding: 12px 16px;
+      border-radius: 10px;
+      max-width: 90%;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      font-size: 1em;
+      transition: all 0.2s;
+      position: relative;
+      animation: pop 0.2s ease-out;
+      text-shadow: 0 1px 2px #0003;
+    }
+    .message.received {
+      background: linear-gradient(145deg, #ffb6e6, #ff79c6);
+      align-self: flex-start;
+      color: var(--text-dark);
+      border: 2px solid var(--text-light);
+    }
+    .message.sent {
+      background: linear-gradient(145deg, #2ecc71, #27ae60);
+      align-self: flex-end;
+      color: black;
+      border: 2px solid var(--text-light);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    .chat-input-area {
+      display: flex;
+      padding: 12px;
+      background-color: var(--purple-medium);
+      gap: 10px;
+      border-top: 3px solid var(--pink-chat);
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 12px;
+      border: 3px solid var(--purple-light);
+      border-radius: 25px;
+      background-color: var(--purple-dark);
+      color: var(--text-light);
+      outline: none;
+      font-size: 0.95em;
+      box-shadow: inset 0 0 5px var(--purple-light);
+    }
+    .chat-input-area button {
+      padding: 12px 20px;
+      background-color: var(--pink-chat);
+      color: var(--text-dark);
+      border: 3px solid var(--purple-light);
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      box-shadow: 0 0 5px var(--purple-light);
+    }
+    .chat-input-area button:hover {
+      background-color: var(--purple-light);
+      color: var(--text-light);
+      transform: scale(1.05);
+    }
+
+    .chat-hint {
+      font-size: 0.8em;
+      padding: 6px 12px;
+      background-color: var(--purple-dark);
+      text-align: left;
+      color: #7db0ff;
+      border-top: 1px dotted var(--purple-light);
+    }
+
+    .restart-btn {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      background-color: var(--green-chat);
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 0 5px var(--purple-light);
+    }
+    .restart-btn:hover {
+      transform: scale(1.05);
+      background-color: #2ecc71;
+    }
+
+    @media screen and (max-width: 700px) {
+      .chat-wrapper { flex-direction: column; height: auto; }
+      .heart-bar-game { flex-direction: row; justify-content: center; width: 100%; }
+      .heart-bar-game .heart { width: 50px; height: 50px; }
+    }
+  </style>
+</head>
+<body>
+    <audio id="bg-music" src="assets/memo.mp3" autoplay loop></audio>
+<div class="chat-wrapper">
+
+  <div class="heart-bar-game">
+    <img id="heart-image" src="assets/bar3.png" alt="Heart" class="heart">
+  </div>
+
+  <div class="chat-container">
+    <header class="chat-header">
+      <div class="profile-pic">
+        <img src="https://i.pravatar.cc/50?img=3" alt="Profile">
+      </div>
+      <div class="chat-info">
+        <div class="chat-title">Naya</div>
+        <div class="chat-subtitle">Match me with regex 💖</div>
+      </div>
+    </header>
+
+    <div class="chat-window" id="chat-window"></div>
+
+    <footer class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Ketik di sini... (Enter untuk kirim)">
+      <button id="send-btn">Send</button>
+    </footer>
+
+    <div class="chat-hint">Hint: sebutkan kegiatan tidur</div>
+  </div>
+</div>
+
+<script>
+const heartImage = document.getElementById('heart-image');
+const heartImages = [
+  'assets/bar0.png', 
+  'assets/bar1.png', 
+  'assets/bar2.png', 
+  'assets/bar3.png'
+];
+let lives = 3;
+
+const chatWindow = document.getElementById('chat-window');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+
+function updateHeartBar() {
+  let index = Math.max(0, Math.min(lives, heartImages.length - 1));
+  heartImage.src = heartImages[index];
+}
+
+function addMessage(text, type) {
+  const msgDiv = document.createElement('div');
+  msgDiv.classList.add('message', type);
+  msgDiv.textContent = text;
+  chatWindow.appendChild(msgDiv);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function wrongAnswer() {
+  lives--;
+  updateHeartBar();
+  addMessage('❌ Jawaban salah!', 'received');
+
+  if (lives <= 0) {
+    addMessage('[PUTUS 💔] Kamu gagal menjawab 3×.', 'received');
+    showRestartButton();
+  }
+}
+
+function showRestartButton() {
+  const btn = document.createElement('button');
+  btn.textContent = 'Restart Chat';
+  btn.classList.add('restart-btn');
+  btn.onclick = () => {
+    lives = 3;
+    updateHeartBar();
+    chatWindow.innerHTML = '';
+    addMessage('[RESET] Chat dimulai ulang!', 'received');
+    btn.remove();
+  };
+  chatWindow.appendChild(btn);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+// Kirim pesan
+sendBtn.addEventListener('click', () => {
+  const message = chatInput.value.trim();
+  if (message !== '') {
+    addMessage(message, 'sent');
+    chatInput.value = '';
+    setTimeout(() => {
+      wrongAnswer();
+    }, 500);
+  }
+});
+
+// Enter
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') sendBtn.click();
+});
+
+// Init
+updateHeartBar();
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Pixel Game</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <audio id="send-sound" src="{{ url_for('static', filename='assets/kirimChat.mp3') }}"></audio>
+<audio id="receive-sound" src="{{ url_for('static', filename='assets/dapetChat.mp3') }}"></audio>
+
+<div class="chat-wrapper">
+
+  <!-- Heart bar di atas chat -->
+  <div class="heart-bar-game">
+    <img id="heart-image" src="{{ url_for('static', filename='assets/bar1.png') }}" alt="Heart" class="heart">
+  </div>
+
+  <!-- Chat container -->
+  <div class="chat-container">
+    <header class="chat-header">
+      <div class="profile-left">
+        <div class="profile-pic">
+          <img src="{{ url_for('static', filename='assets/pfp.jpg') }}" alt="Profile">
+        </div>
+        <div class="chat-info">
+          <div class="chat-title">SAYANG</div>
+          <span class="status-text online">Online</span>
+        </div>
+      </div>
+
+      <div class="profile-right">
+        <button class="icon-btn phone" title="Call"><i class="fas fa-phone"></i></button>
+        <button class="icon-btn video" title="Video Call"><i class="fas fa-video"></i></button>
+      </div>
+    </header>
+
+    <div class="chat-window" id="chat-window">
+      <!-- Pesan muncul di sini -->
+    </div>
+
+    <footer class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Ketik di sini... (Enter untuk kirim)">
+      <button id="send-btn">Send</button>
+    </footer>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+:root {
+  --purple-dark: #1b003e;
+  --purple-medium: #4a1fa6;
+  --purple-light: #9b65ff;
+  --text-light: #f5f0ff;
+  --text-dark: #0f0f0f;
+  --green-chat: #2ecc71;
+  --pink-chat: #ff79c6;
+  --background-gradient: linear-gradient(135deg, #1b003e, #4a1fa6, #9b65ff);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Press Start 2P', monospace;
+  background: var(--background-gradient);
+  color: var(--text-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Wrapper */
+.chat-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  max-width: 850px;
+  width: 100%;
+  height: 600px;
+  padding-left: 100px;
+  position: relative;
+}
+
+/* Heart Bar tetap di pojok layar */
+.heart-bar-game {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  z-index: 9999;
+  background: none;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.heart-bar-game .heart {
+  width: 220px;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+.heart-bar-game .heart:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 6px var(--pink-chat));
+}
+
+/* Chat Container */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(27,0,62,0.9);
+  border: 4px solid var(--purple-light);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(155,101,255,0.7), 0 0 50px rgba(74,31,166,0.5);
+  backdrop-filter: blur(2px);
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px;
+  background: linear-gradient(145deg, var(--purple-light), var(--purple-medium));
+  border-bottom: 3px solid var(--pink-chat);
+  box-shadow: inset 0 -2px 5px rgba(0,0,0,0.3);
+  gap: 12px;
+}
+
+.profile-left { display: flex; align-items: center; gap: 12px; }
+.profile-pic img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 3px solid var(--text-light);
+  box-shadow: 0 0 10px var(--pink-chat);
+  pointer-events: none;
+}
+.chat-info { display: flex; flex-direction: column; }
+.chat-title {
+  font-weight: bold;
+  font-size: 1.5em;
+  text-shadow: 1px 1px var(--purple-dark);
+  transform: translateY(-4px);
+}
+.status-text.online {
+  font-size: 1em;
+  color: #14d866;
+  font-weight: bold;
+  text-shadow: 0 1px 2px #0003;
+  transform: translateY(-2px);
+}
+
+.profile-right { display: flex; align-items: center; gap: 10px; }
+.icon-btn {
+  cursor: pointer;
+  font-size: 1.3em;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background-color: rgba(255,255,255,0.1);
+  border: none;
+  transition: all 0.2s;
+}
+.icon-btn:hover {
+  background-color: rgba(255,255,255,0.3);
+  transform: scale(1.2);
+}
+
+.chat-window {
+  flex: 1;
+  padding: 15px;
+  background-color: rgba(27,0,62,0.95);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 2px solid var(--purple-light);
+  border-bottom: 2px solid var(--purple-light);
+  min-height: 400px;
+  max-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--purple-light) rgba(27,0,62,0.7);
+}
+.chat-window::-webkit-scrollbar { width: 8px; }
+.chat-window::-webkit-scrollbar-thumb {
+  background-color: var(--purple-light);
+  border-radius: 4px;
+  box-shadow: inset 0 0 3px #0003;
+}
+
+.message {
+  padding: 14px 18px;
+  border-radius: 12px;
+  max-width: 90%;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  font-size: 1.2em;
+  transition: all 0.3s;
+  position: relative;
+  animation: pop 0.2s ease-out;
+  text-shadow: 0 1px 2px #0003;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.message.received {
+  background: linear-gradient(145deg, #ffb6e6, #ff79c6);
+  align-self: flex-start;
+  color: var(--text-dark);
+  border: 2px solid var(--text-light);
+}
+.message.sent {
+  background: linear-gradient(145deg, #2ecc71, #27ae60);
+  align-self: flex-end;
+  color: var(--text-dark);
+  border: 2px solid var(--text-light);
+}
+
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 14px;
+  background-color: var(--purple-medium);
+  gap: 12px;
+  border-top: 3px solid var(--pink-chat);
+  flex-shrink: 0;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+}
+.chat-input-area input {
+  flex: 1;
+  padding: 12px;
+  border: 3px solid var(--purple-light);
+  border-radius: 25px;
+  background-color: var(--purple-dark);
+  color: var(--text-light);
+  outline: none;
+  font-size: 1em;
+  box-shadow: inset 0 0 5px var(--purple-light);
+  transition: all 0.2s;
+}
+.chat-input-area input:focus {
+  border-color: var(--pink-chat);
+  box-shadow: inset 0 0 10px var(--pink-chat);
+}
+.chat-input-area button {
+  padding: 12px 20px;
+  background-color: var(--pink-chat);
+  color: var(--text-dark);
+  border: 3px solid var(--purple-light);
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  box-shadow: 0 0 8px var(--purple-light);
+}
+.chat-input-area button:hover {
+  background-color: var(--purple-light);
+  color: var(--text-light);
+  transform: scale(1.05);
+}
+
+/* --- Blok CSS untuk Tombol Akhir Game (Diperbarui) --- */
+.end-game-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.restart-btn {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px var(--purple-light);
+    transition: all 0.3s;
+    color: white;
+}
+
+.restart-btn:hover {
+    transform: scale(1.05);
+    color: #fff;
+}
+
+.btn-win {
+    background-color: var(--green-chat);
+}
+.btn-win:hover {
+    background-color: #27ae60;
+}
+
+.btn-lose {
+    background-color: #e74c3c;
+}
+.btn-lose:hover {
+    background-color: #c0392b;
+}
+
+.btn-home {
+    background-color: #4a1fa6;
+}
+.btn-home:hover {
+    background-color: #9b65ff;
+}
+/* --- Akhir Blok Tombol --- */
+
+
+@media screen and (max-width: 700px) {
+  .chat-wrapper { flex-direction: column; height: auto; }
+  .heart-bar-game {
+    position: relative;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
+  .heart-bar-game .heart { width: 55px; height: 55px; }
+}
+
+#sound-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  padding: 14px 16px;
+  background: rgba(42, 0, 63, 0.9);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  outline: 2px solid var(--accent, #a64dff);
+  box-shadow: 0 0 0 2px #0b0f22 inset, 0 4px 6px rgba(0,0,0,0.5);
+  z-index: 9999;
+}
+
+.message.day-indicator {
+    align-self: center;
+    background: rgba(14, 198, 204, 0.2);
+    border: 3px solid var(--accent-2);
+    color: var(--accent-2);
+    font-family: "Silkscreen", monospace;
+    font-size: 1.2em;
+    padding: 6px 15px;
+    border-radius: 15px;
+    margin: 10px 0;
+    box-shadow: none;
+}
+
+.message.notification {
+    align-self: center;
+    background: rgba(103, 236, 174, 0.2);
+    box-shadow: none;
+    border: 3px solid var(--accent-2);
+    color: var(--text-light);
+    font-size: 0.9em;
+    max-width: 80%;
+    text-align: center;
+    margin: 10px 0;
+}
