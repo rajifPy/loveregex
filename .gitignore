@@ -25,18 +25,17 @@ wheels/
 .installed.cfg
 *.egg
 
-# IDE and editor files
+
 .idea/
 *.sublime-workspace
 *.sublime-project
 
-# macOS files
+
 .DS_Store
 
-# Vercel specific (if any local build artifacts)
+
 .vercel/
 
-# Local configuration files (if you add them later)
 .env
 .local
 *.log
