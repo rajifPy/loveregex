@@ -293,7 +293,7 @@ def next_question():
 @app.route('/api/validate', methods=['POST'])
 def validate_answer():
     data = request.json
-    user_answer = data.get('answer', '').lower()
+    user_answer = data.get('answer', '')
     level = session.get('level', 0)
     lives = session.get('lives', 3)
 
@@ -302,7 +302,7 @@ def validate_answer():
 
     current_level_data = GAME_LEVELS[level]
     
-    if re.match(current_level_data['regex'], user_answer, re.IGNORECASE):
+    if re.match(current_level_data['regex'], user_answer):
         level += 1
         session['level'] = level
         
