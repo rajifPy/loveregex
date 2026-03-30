@@ -2,54 +2,117 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Chat Pixel Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
-
   <audio id="send-sound" src="{{ url_for('static', filename='assets/kirimChat.mp3') }}"></audio>
-<audio id="receive-sound" src="{{ url_for('static', filename='assets/dapetChat.mp3') }}"></audio>
+  <audio id="receive-sound" src="{{ url_for('static', filename='assets/dapetChat.mp3') }}"></audio>
+  <audio id="click-sound" src="{{ url_for('static', filename='assets/click.mp3') }}"></audio>
+  <audio id="bg-music" src="{{ url_for('static', filename='assets/memo.mp3') }}" loop></audio>
 
-<div class="chat-wrapper">
+  <button id="sound-btn"><i class="fas fa-volume-mute"></i></button>
 
-  <!-- Heart bar di atas chat -->
-  <div class="heart-bar-game">
-    <img id="heart-image" src="{{ url_for('static', filename='assets/bar1.png') }}" alt="Heart" class="heart">
-  </div>
+  <div class="chat-wrapper">
 
-  <!-- Chat container -->
-  <div class="chat-container">
-    <header class="chat-header">
-      <div class="profile-left">
-        <div class="profile-pic">
-          <img src="{{ url_for('static', filename='assets/pfp.jpg') }}" alt="Profile">
-        </div>
-        <div class="chat-info">
-          <div class="chat-title">SAYANG</div>
-          <span class="status-text online">Online</span>
-        </div>
-      </div>
-
-      <div class="profile-right">
-        <button class="icon-btn phone" title="Call"><i class="fas fa-phone"></i></button>
-        <button class="icon-btn video" title="Video Call"><i class="fas fa-video"></i></button>
-      </div>
-    </header>
-
-    <div class="chat-window" id="chat-window">
-      <!-- Pesan muncul di sini -->
+    <!-- Heart bar -->
+    <div class="heart-bar-game">
+      <img id="heart-image" src="{{ url_for('static', filename='assets/bar1.png') }}" alt="Heart" class="heart">
     </div>
 
-    <footer class="chat-input-area">
-      <input type="text" id="chat-input" placeholder="Ketik di sini... (Enter untuk kirim)">
-      <button id="send-btn">Send</button>
-    </footer>
-  </div>
-</div>
+    <!-- Chat container -->
+    <div class="chat-container">
+      <header class="chat-header">
+        <div class="profile-left">
+          <div class="profile-pic">
+            <img src="{{ url_for('static', filename='assets/pfp.jpg') }}" alt="Profile">
+          </div>
+          <div class="chat-info">
+            <div class="chat-title">SAYANG</div>
+            <span class="status-text online">Online</span>
+          </div>
+        </div>
+        <div class="profile-right">
+          <button class="icon-btn phone" title="Call"><i class="fas fa-phone"></i></button>
+          <button class="icon-btn video" title="Video Call"><i class="fas fa-video"></i></button>
+        </div>
+      </header>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+      <div class="chat-window" id="chat-window">
+        <!-- Messages appear here -->
+      </div>
+
+      <footer class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Ketik di sini..." autocomplete="off" autocorrect="off" spellcheck="false">
+        <button id="send-btn">Send</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    // Music persistence (same logic as landing/rules)
+    const bgMusic = document.getElementById('bg-music');
+    const soundBtn = document.getElementById('sound-btn');
+    let isPlaying;
+
+    function updateSoundButton() {
+      if (soundBtn) {
+        soundBtn.innerHTML = isPlaying
+          ? '<i class="fas fa-volume-up"></i>'
+          : '<i class="fas fa-volume-mute"></i>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const musicState = localStorage.getItem('musicIsPlaying');
+      const savedTime  = localStorage.getItem('musicCurrentTime');
+      if (savedTime) bgMusic.currentTime = parseFloat(savedTime);
+
+      if (musicState === 'false') {
+        isPlaying = false;
+      } else {
+        isPlaying = true;
+        bgMusic.volume = 0.4;
+        bgMusic.play().catch(() => { isPlaying = false; updateSoundButton(); });
+      }
+      updateSoundButton();
+    });
+
+    soundBtn.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      isPlaying ? bgMusic.play() : bgMusic.pause();
+      localStorage.setItem('musicIsPlaying', isPlaying);
+      updateSoundButton();
+    });
+
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('musicCurrentTime', bgMusic.currentTime);
+      localStorage.setItem('musicIsPlaying', isPlaying);
+    });
+
+    // Prevent zoom on double-tap (iOS)
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) e.preventDefault();
+      lastTouchEnd = now;
+    }, false);
+
+    // Keep chat scrolled when virtual keyboard opens
+    const chatInput = document.getElementById('chat-input');
+    chatInput.addEventListener('focus', () => {
+      setTimeout(() => {
+        const chatWindow = document.getElementById('chat-window');
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }, 400);
+    });
+  </script>
 </body>
 </html>
